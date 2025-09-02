@@ -14,11 +14,9 @@ MovieGo is a web application API for managing movies. It allows users to create,
 ---
 
 ## **Technologies Used**
+- **Frontend:** React.js, TypeScript, TailwindCSS
 - **Backend:** Node.js, Express
 - **Routing:** Express Router
 - **Environment Variables:** dotenv
 - **Version Control:** Git & GitHub
 
----
-
-## **Project Structure**
