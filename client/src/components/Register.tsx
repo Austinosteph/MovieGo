@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaEyeSlash } from 'react-icons/fa';
-import { FaRegEyeSlash } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaEyeSlash, FaRegEyeSlash } from 'react-icons/fa';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
+
+type SignupData = {
+	name: string;
+	email: string;
+	password: string;
+};
 
 const Register = () => {
 	const [formData, setFormData] = useState({
@@ -16,16 +22,43 @@ const Register = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+	// API call
+	const signupUser = async (userData: SignupData) => {
+		const res = await axios.post(
+			'http://localhost:3000/api/v1/auth/register',
+			userData
+		);
+		return res.data;
+	};
+
+	// React Query mutation
+	const mutation = useMutation({
+		mutationFn: signupUser,
+		onSuccess: () => {
+			showMessage(`Welcome ${formData.name} to MovieGo 🎉`);
+			setTimeout(() => navigate('/user'), 1500);
+			setFormData({ name: '', email: '', password: '', confirmpassword: '' });
+		},
+		onError: (error: any) => {
+			const errMsg =
+				error.response?.data?.error ||
+				error.response?.data?.errors?.join(', ') ||
+				'Signup failed ❌';
+			showMessage(errMsg);
+		},
+	});
+
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
 	const showMessage = (msg: string) => {
 		setMessage(msg);
-		setTimeout(() => setMessage(''), 5000);
+		const timer = setTimeout(() => setMessage(''), 5000);
+		return () => clearTimeout(timer);
 	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (
@@ -38,24 +71,24 @@ const Register = () => {
 			return;
 		}
 
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(formData.email)) {
+			showMessage('Invalid email format');
+			return;
+		}
+
+		if (formData.password.length < 6) {
+			showMessage('Password must be at least 6 characters');
+			return;
+		}
+
 		if (formData.password !== formData.confirmpassword) {
 			showMessage('Passwords do not match');
 			return;
 		}
 
-		showMessage(`Welcome ${formData.name} to MovieGo`);
-		setTimeout(() => {
-			navigate('/user');
-		}, 1000);
-
-		setTimeout(() => {
-			setFormData({
-				name: '',
-				email: '',
-				password: '',
-				confirmpassword: '',
-			});
-		}, 2000);
+		const { confirmpassword, ...dataToSend } = formData;
+		mutation.mutate(dataToSend);
 	};
 
 	return (
@@ -103,7 +136,7 @@ const Register = () => {
 						<button
 							type="button"
 							onClick={() => setShowPassword((prev) => !prev)}
-							className="absolute right-3 top-3  text-gray-600"
+							className="absolute right-3 top-3 text-gray-600"
 						>
 							{showPassword ? <FaEyeSlash /> : <FaRegEyeSlash />}
 						</button>
@@ -134,9 +167,10 @@ const Register = () => {
 
 				<button
 					type="submit"
+					disabled={mutation.isPending}
 					className="w-full bg-green-600 p-3 text-white font-medium rounded-lg hover:bg-green-700"
 				>
-					Sign Up
+					{mutation.isPending ? 'Signing up...' : 'Sign Up'}
 				</button>
 			</form>
 
@@ -150,13 +184,11 @@ const Register = () => {
 				</Link>
 			</div>
 
-			<div>
-				{message && (
-					<p className="bg-white text-black p-3 rounded-lg shadow-lg border border-green-300">
-						{message}
-					</p>
-				)}
-			</div>
+			{message && (
+				<p className="bg-white text-black p-3 rounded-lg shadow-lg border border-green-300">
+					{message}
+				</p>
+			)}
 		</div>
 	);
 };
