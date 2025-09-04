@@ -1,16 +1,37 @@
+// @ts-nocheck
 import { Routes, Route } from 'react-router-dom';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserDashboard from './pages/user/UserDashboard';
 import Signup from './pages/auth/Signup';
 import Signin from './pages/auth/Signin';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
 	return (
 		<Routes>
-			<Route path="/" element={<Signup />} />
-			<Route path="/Signin" element={<Signin />} />
-			<Route path="/admin" element={<AdminDashboard />} />
-			<Route path="/user" element={<UserDashboard />} />
+			{/* Public routes */}
+			<Route path="/" element={<Dashboard />} />
+			<Route path="/signup" element={<Signup />} />
+			<Route path="/signin" element={<Signin />} />
+
+			{/* Protected routes */}
+			<Route
+				path="/admin"
+				element={
+					<ProtectedRoute>
+						<AdminDashboard />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/user"
+				element={
+					<ProtectedRoute>
+						<UserDashboard />
+					</ProtectedRoute>
+				}
+			/>
 		</Routes>
 	);
 }

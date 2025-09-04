@@ -5,11 +5,13 @@ const {
 	createMovie,
 	deleteMovie,
 	getAllMovie,
-	updateMove,
+	updateMovie,
 	getMovie,
 } = require('../controllers/movies');
+const { UploadMovie } = require('../controllers/upload');
 
+router.route('/uploads').post(UploadMovie);
 router.route('/').post(createMovie).get(getAllMovie);
-router.route('/:id').get(getMovie).delete(deleteMovie).patch(updateMove);
+router.route('/:id').get(getMovie).delete(deleteMovie).patch(updateMovie);
 
 module.exports = router;
