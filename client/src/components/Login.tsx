@@ -147,7 +147,7 @@ const Login = () => {
 			<div className="flex justify-center items-center text-sm mt-4">
 				<span>Don't have an account?</span>
 				<Link
-					to="/register"
+					to="/signup"
 					className="text-green-600 font-medium ml-1 hover:underline"
 				>
 					Sign up

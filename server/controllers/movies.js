@@ -10,7 +10,14 @@ const createMovie = async (req, res) => {
 	res.status(StatusCodes.CREATED).json(movie);
 };
 const getMovie = async (req, res) => {
-	res.send('get movie by id');
+	const { id } = req.params;
+	const movie = await Movie.findById(id);
+	if (!movie) {
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({ message: 'Movie not found' });
+	}
+	res.status(StatusCodes.OK).json(movie);
 };
 const updateMovie = async (req, res) => {
 	res.send('updtae movie');

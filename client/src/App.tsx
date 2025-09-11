@@ -6,6 +6,7 @@ import Signup from './pages/auth/Signup';
 import Signin from './pages/auth/Signin';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import MovieInfo from './pages/user/MovieInfo';
 
 export default function App() {
 	return (
@@ -29,6 +30,14 @@ export default function App() {
 				element={
 					<ProtectedRoute>
 						<UserDashboard />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="user/:movieinfoID"
+				element={
+					<ProtectedRoute>
+						<MovieInfo />
 					</ProtectedRoute>
 				}
 			/>
