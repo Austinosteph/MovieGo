@@ -7,6 +7,7 @@ import Signin from './pages/auth/Signin';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import MovieInfo from './pages/user/MovieInfo';
+import Booking from './pages/user/Booking';
 
 export default function App() {
 	return (
@@ -25,6 +26,8 @@ export default function App() {
 					</ProtectedRoute>
 				}
 			/>
+
+			{/* User routes */}
 			<Route
 				path="/user"
 				element={
@@ -38,6 +41,14 @@ export default function App() {
 				element={
 					<ProtectedRoute>
 						<MovieInfo />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="user/:movieinfoID/booking"
+				element={
+					<ProtectedRoute>
+						<Booking />
 					</ProtectedRoute>
 				}
 			/>

@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isAuthenticated, getUserRole, logout } from '../../lib/auth';
 import axios from 'axios';
@@ -11,11 +11,19 @@ interface Movie {
 	title: string;
 	description: string;
 	image: string;
+	duration: number;
+	availableSeats: string[];
+	dateToWatch: string;
+	timeToWatch: string;
 }
 
 const MovieInfo = () => {
 	const navigate = useNavigate();
 	const { movieinfoID } = useParams<{ movieinfoID: string }>();
+
+	const [selectedTheater, setSelectedTheater] = useState<string | null>(null);
+	const [selectedDate, setSelectedDate] = useState<string | null>(null);
+	const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (!isAuthenticated() || getUserRole() !== 'user') {
@@ -29,28 +37,18 @@ const MovieInfo = () => {
 		navigate('/signin');
 	};
 
-	const {
-		data: movie,
-		isLoading,
-		isError,
-	} = useQuery<Movie>({
+	const { data: movie } = useQuery<Movie>({
 		queryKey: ['movie', movieinfoID],
 		queryFn: async () => {
 			const token = localStorage.getItem('token');
-			if (!token) {
-				throw new Error('No token found');
-			}
+			if (!token) throw new Error('No token found');
 
 			const res = await axios.get(
 				`http://localhost:3000/api/v1/movie/${movieinfoID}`,
 				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
+					headers: { Authorization: `Bearer ${token}` },
 				}
 			);
-
-			console.log('Fetched movie data:', res.data); //remove later
 			return res.data;
 		},
 		enabled: !!movieinfoID,
@@ -58,109 +56,126 @@ const MovieInfo = () => {
 
 	return (
 		<div className="bg-black-green min-h-screen w-full space-y-4 overflow-auto">
-			<nav className="p-4 px-6 flex justify-between">
-				<div>
-					<img src="/logo.png" className="w-32 h-12" />
-				</div>
-				<div className="flex space-x-4 items-center">
-					<Button
-						className="bg-red-500 border border-black"
-						onClick={handleLogout}
-					>
-						Logout
-					</Button>
-				</div>
+			{/* Navbar */}
+			<nav className="p-4 px-6 flex justify-between items-center">
+				<img src="/logo.png" className="w-24 sm:w-32 h-10 sm:h-12" />
+				<Button
+					className="bg-red-500 border border-black text-sm sm:text-base"
+					onClick={handleLogout}
+				>
+					Logout
+				</Button>
 			</nav>
 
-			<main className="p-6 space-y-16 h-screen flex flex-col">
-				<div className="flex space-x-80 px-28 pr-10">
-					{/* first; get details from data base and update code */}
-					<div className="space-y-16">
+			<main className="p-4 sm:p-6 space-y-10 sm:space-y-16 flex flex-col h-full">
+				<div className="flex flex-col lg:flex-row lg:space-x-20 xl:space-x-80 lg:px-20 xl:px-28 lg:pr-10">
+					{/* first; get details from database */}
+					<div className="space-y-12 flex-1">
 						{/* Theater */}
-						<div className="text-white space-y-8">
-							<h1 className="font-semibold text-4xl">Theater</h1>
-							<div className="flex space-x-2">
-								<div className="border border-white rounded-full p-2 flex justify-center items-center px-3 space-x-2 hover:cursor-pointer hover:bg-green-600">
-									<CiLocationOn className="w-6 h-6" />
-									<span className="font-mono text-lg">Bukit Bintang</span>
-								</div>
-								<div className="border border-white rounded-full p-2 flex justify-center items-center px-3 space-x-2 hover:cursor-pointer hover:bg-green-600">
-									<CiLocationOn className="w-6 h-6" />
-									<span className="font-mono text-lg">BIOI Putrajaye</span>
-								</div>
-								<div className="border border-white rounded-full p-2 flex justify-center items-center px-3 space-x-2 hover:cursor-pointer hover:bg-green-600">
-									<CiLocationOn className="w-6 h-6" />
-									<span className="font-mono text-lg">KB Mall </span>
-								</div>
+						<div className="text-white space-y-6">
+							<h1 className="font-semibold text-2xl sm:text-4xl">Theater</h1>
+							<div className="flex flex-wrap gap-3">
+								{['Galaxy View', 'Epic Reel', 'SilverScreen'].map((t) => (
+									<div
+										key={t}
+										onClick={() => setSelectedTheater(t)}
+										className={`border border-white rounded-full p-2 flex items-center px-3 space-x-2 hover:cursor-pointer hover:bg-green-600 transition ${
+											selectedTheater === t ? 'bg-green-700' : ''
+										}`}
+									>
+										<CiLocationOn className="w-5 h-5 sm:w-6 sm:h-6" />
+										<span className="font-mono text-sm sm:text-lg">{t}</span>
+									</div>
+								))}
 							</div>
 						</div>
+
 						{/* Date */}
-						<div className="text-white space-y-8">
-							<h1 className="font-semibold text-4xl">Date</h1>
-							<div className="flex space-x-4">
-								<div className="flex space-x-4">
-									<div className="border border-white rounded-xl p-4 flex flex-col justify-center items-center  hover:cursor-pointer hover:bg-green-600">
-										<p className="text-base font-medium">22 Oct</p>
-										<p className="text-xl font-black">Mon</p>
+						<div className="text-white space-y-6">
+							<h1 className="font-semibold text-2xl sm:text-4xl">Date</h1>
+							<div className="flex flex-wrap gap-3">
+								{['22 Oct Mon', '23 Oct Tue', '24 Oct Wed'].map((d) => (
+									<div
+										key={d}
+										onClick={() => setSelectedDate(d)}
+										className={`border border-white rounded-xl p-3 sm:p-4 flex flex-col justify-center items-center hover:cursor-pointer hover:bg-green-600 transition ${
+											selectedDate === d ? 'bg-green-700' : ''
+										}`}
+									>
+										<p className="text-sm sm:text-base font-medium">
+											{d.split(' ')[0]} {d.split(' ')[1]}
+										</p>
+										<p className="text-lg sm:text-xl font-black">
+											{d.split(' ')[2]}
+										</p>
 									</div>
-								</div>
-								<div className="flex space-x-4">
-									<div className="border border-white rounded-xl p-4 flex flex-col justify-center items-center  hover:cursor-pointer hover:bg-green-600">
-										<p className="text-base font-medium">22 Oct</p>
-										<p className="text-xl font-black">Mon</p>
-									</div>
-								</div>
-								<div className="flex space-x-4">
-									<div className="border border-white rounded-xl p-4 flex flex-col justify-center items-center hover:cursor-pointer  hover:bg-green-600">
-										<p className="text-base font-medium">22 Oct</p>
-										<p className="text-xl font-black">Mon</p>
-									</div>
-								</div>
-								<div className="flex space-x-4">
-									<div className="border border-white rounded-xl p-4 flex flex-col justify-center items-center  hover:cursor-pointer hover:bg-green-600">
-										<p className="text-base font-medium">22 Oct</p>
-										<p className="text-xl font-black">Mon</p>
-									</div>
-								</div>
-								<div className="flex space-x-4">
-									<div className="border border-white rounded-xl p-4 flex flex-col justify-center items-center hover:cursor-pointer hover:bg-green-600">
-										<p className="text-base font-medium">22 Oct</p>
-										<p className="text-xl font-black">Mon</p>
-									</div>
-								</div>
-								<div className="flex space-x-4">
-									<div className="border border-white rounded-xl p-4 flex flex-col justify-center items-center  hover:cursor-pointer hover:bg-green-600">
-										<p className="text-base font-medium">22 Oct</p>
-										<p className="text-xl font-black">Mon</p>
-									</div>
-								</div>
+								))}
 							</div>
 						</div>
+
 						{/* Time */}
-						<div className="text-white space-y-8">
-							<h1 className="font-semibold text-4xl">Time</h1>
-							<div className="flex space-x-4">
-								<div className="flex space-x-4">
-									<div className="border border-white p-2 px-4 rounded-md flex flex-col justify-center items-center  hover:cursor-pointer hover:bg-green-600">
-										<p className="text-base font-medium">15:40</p>
+						<div className="text-white space-y-6">
+							<h1 className="font-semibold text-2xl sm:text-4xl">Time</h1>
+							<div className="flex flex-wrap gap-3">
+								{['15:40', '18:00', '20:15', '22:30'].map((time) => (
+									<div
+										key={time}
+										onClick={() => setSelectedTime(time)}
+										className={`border border-white p-2 px-4 rounded-md flex items-center hover:cursor-pointer hover:bg-green-600 transition ${
+											selectedTime === time ? 'bg-green-700' : ''
+										}`}
+									>
+										<p className="text-sm sm:text-base font-medium">{time}</p>
 									</div>
-									<div className="border border-white p-2 px-4 rounded-md flex flex-col justify-center items-center  hover:cursor-pointer hover:bg-green-600">
-										<p className="text-base font-medium">15:40</p>
-									</div>
-									<div className="border border-white p-2 px-4 rounded-md flex flex-col justify-center items-center  hover:cursor-pointer hover:bg-green-600">
-										<p className="text-base font-medium">15:40</p>
-									</div>
-								</div>
+								))}
 							</div>
 						</div>
 					</div>
 
 					{/* second */}
-					<div className="w-[250px] h-[548px] bg-blue-700">2</div>
+					<div className="mt-10 lg:mt-0 w-full lg:w-[250px] space-y-5 text-white flex-shrink-0">
+						<img
+							src={`http://localhost:3000${movie?.image}`}
+							className="w-full sm:w-64 h-full sm:h-96 object-cover rounded-2xl mx-auto"
+						/>
+						<div className="space-y-2 text-center lg:text-left">
+							<h1 className="font-semibold text-xl sm:text-2xl">
+								{movie?.title}
+							</h1>
+							<p className="font-normal text-sm sm:text-lg">
+								{movie?.description}
+							</p>
+							<div className="flex justify-center lg:justify-start space-x-2 text-sm sm:text-lg">
+								<p className="font-medium">Duration:</p>
+								<p>{movie?.duration} hours</p>
+							</div>
+						</div>
+					</div>
 				</div>
 
-				<div className="flex justify-end pr-64">
-					<div className="bg-amber-700 w-[373px] h-[325px]">3</div>
+				{/* Booking Summary */}
+				<div className="flex justify-center lg:justify-end lg:pr-32">
+					<div className="w-full sm:w-80 h-auto sm:h-72 mb-4 rounded-2xl border border-white p-6 text-white flex flex-col space-y-4">
+						<h1 className="font-semibold text-xl sm:text-3xl text-center">
+							{selectedTheater || 'Select Theater'}
+						</h1>
+						<p className="font-semibold text-lg sm:text-2xl">
+							{selectedDate || 'Select Date'}
+						</p>
+						<p className="text-base sm:text-xl">
+							{selectedTime || 'Select Time'}
+						</p>
+						<p className="text-sm sm:text-base">
+							*Seat selection can be done after this
+						</p>
+						<Button
+							className="bg-green-700 border border-green-950 mt-2 hover:bg-green-800 text-sm sm:text-base disabled:opacity-50"
+							disabled={!selectedTheater || !selectedDate || !selectedTime}
+							onClick={() => navigate(`/user/${movieinfoID}/booking`)}
+						>
+							Proceed
+						</Button>
+					</div>
 				</div>
 			</main>
 		</div>

@@ -21,7 +21,7 @@ interface Movie {
 }
 const UserDashboard = () => {
 	const navigate = useNavigate();
-	const { data, isLoading, isError } = useQuery<Movie[]>({
+	const { data } = useQuery<Movie[]>({
 		queryKey: ['movies'],
 		queryFn: async () => {
 			const res = await axios.get('http://localhost:3000/api/v1/movie', {
@@ -44,8 +44,7 @@ const UserDashboard = () => {
 		logout();
 		navigate('/signin');
 	};
-	if (isLoading) return <p>Loading movies...</p>;
-	if (isError) return <p>Failed to load movies</p>;
+
 	return (
 		<div className="bg-black-green min-h-screen w-full space-y-4 overflow-auto">
 			<nav className="p-4 px-6 flex justify-between">
