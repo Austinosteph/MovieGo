@@ -12,6 +12,7 @@ app.use('/uploads', express.static('./uploads'));
 // routers
 const authRouter = require('./routes/auth');
 const movieRouter = require('./routes/movies');
+const bookingRouter = require('./routes/bookings');
 
 //database & authentication
 const connectDB = require('./db/Connect');
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 // routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/movie', authenticateUser, movieRouter);
+app.use('/api/v1/booking', authenticateUser, bookingRouter);
 
 //start server with database
 const port = process.env.PORT || 3000;

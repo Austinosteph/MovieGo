@@ -4,6 +4,10 @@ const BookingSchema = new mongoose.Schema(
 	{
 		user: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
 		movie: { type: mongoose.Types.ObjectId, ref: 'Movie', required: true },
+		title: { type: String, required: true },
+		theater: { type: String, required: true },
+		dateToWatch: { type: String, required: true },
+		timeToWatch: { type: String, required: true },
 		seats: {
 			type: [{ type: String, required: true }],
 			validate: [(arr) => arr.length > 0, 'Please select at least one seat'],

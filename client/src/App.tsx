@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import MovieInfo from './pages/user/MovieInfo';
 import Booking from './pages/user/Booking';
+import Checkout from './pages/user/Checkout';
+import Successful from './pages/user/Successful';
 
 export default function App() {
 	return (
@@ -49,6 +51,22 @@ export default function App() {
 				element={
 					<ProtectedRoute>
 						<Booking />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/checkout"
+				element={
+					<ProtectedRoute>
+						<Checkout />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/successful"
+				element={
+					<ProtectedRoute>
+						<Successful />
 					</ProtectedRoute>
 				}
 			/>
