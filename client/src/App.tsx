@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Routes, Route } from 'react-router-dom';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserDashboard from './pages/user/UserDashboard';
@@ -10,6 +9,7 @@ import MovieInfo from './pages/user/MovieInfo';
 import Booking from './pages/user/Booking';
 import Checkout from './pages/user/Checkout';
 import Successful from './pages/user/Successful';
+import Tickets from './pages/user/Tickets';
 
 export default function App() {
 	return (
@@ -67,6 +67,14 @@ export default function App() {
 				element={
 					<ProtectedRoute>
 						<Successful />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/tickets"
+				element={
+					<ProtectedRoute>
+						<Tickets />
 					</ProtectedRoute>
 				}
 			/>

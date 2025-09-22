@@ -8,6 +8,11 @@ const BookingSchema = new mongoose.Schema(
 		theater: { type: String, required: true },
 		dateToWatch: { type: String, required: true },
 		timeToWatch: { type: String, required: true },
+		paymentstatus: {
+			type: String,
+			enum: ['pending', 'success', 'failed'],
+			default: 'pending',
+		},
 		seats: {
 			type: [{ type: String, required: true }],
 			validate: [(arr) => arr.length > 0, 'Please select at least one seat'],

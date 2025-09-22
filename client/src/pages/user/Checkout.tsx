@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const Checkout = () => {
 	const { movieId, title, theater, date, time, seats, getTotal } =
@@ -12,11 +13,22 @@ const Checkout = () => {
 	const token = localStorage.getItem('token');
 	const navigate = useNavigate();
 
+	let userEmail = '';
+	if (token) {
+		try {
+			const decoded: any = jwtDecode(token);
+			userEmail = decoded?.email || '';
+		} catch (err) {
+			console.error('Error decoding JWT', err);
+		}
+	}
+
 	const mutation = useMutation({
-		mutationFn: () => {
+		mutationFn: async () => {
 			if (!token) throw new Error('You must be logged in to book a ticket');
 
-			return axios.post(
+			// 1. Create booking
+			const res = await axios.post(
 				'http://localhost:3000/api/v1/booking',
 				{
 					movieId,
@@ -29,21 +41,43 @@ const Checkout = () => {
 				},
 				{
 					headers: {
-						Authorization: `Bearer ${token}`, // send token
+						Authorization: `Bearer ${token}`,
 					},
 				}
 			);
-		},
-		onSuccess: (res) => {
-			alert('Booking confirmed! ID: ' + res.data.bookingId);
-			navigate('/successful');
+
+			const { bookingId } = res.data;
+
+			const handler = (window as any).PaystackPop.setup({
+				key: 'pk_test_21d689e588f41d19245f637b56ef956becc600ff',
+				email: userEmail,
+				amount: getTotal() * 100, //amount in kobo
+				ref: bookingId,
+				onClose: () => {
+					alert('Payment closed');
+				},
+
+				callback: function (response: any) {
+					axios
+						.post('https://253da150e7c6.ngrok-free.app/api/v1/payment/verify', {
+							reference: response.reference,
+							bookingId: bookingId,
+						})
+						.then(() => {
+							navigate('/successful');
+						})
+						.catch((error) => {
+							alert('Payment verification failed');
+							console.error(error);
+						});
+				},
+			});
+
+			handler.openIframe();
 		},
 		onError: (err: any) => {
 			alert('Booking failed: ' + (err.response?.data?.message || err.message));
-			console.error(
-				'Booking failed:',
-				err.response?.data?.message || err.message
-			);
+			console.error(err);
 		},
 	});
 
