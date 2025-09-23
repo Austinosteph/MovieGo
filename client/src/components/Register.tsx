@@ -25,7 +25,7 @@ const Register = () => {
 	// API call
 	const signupUser = async (userData: SignupData) => {
 		const res = await axios.post(
-			'http://localhost:3000/api/v1/auth/register',
+			'https://moviego-6jj2.onrender.com/api/v1/auth/register',
 			userData
 		);
 		return res.data;

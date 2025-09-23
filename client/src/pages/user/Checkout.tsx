@@ -29,7 +29,7 @@ const Checkout = () => {
 
 			// 1. Create booking
 			const res = await axios.post(
-				'http://localhost:3000/api/v1/booking',
+				'https://moviego-6jj2.onrender.com/api/v1/booking',
 				{
 					movieId,
 					title,
@@ -59,7 +59,7 @@ const Checkout = () => {
 
 				callback: function (response: any) {
 					axios
-						.post('https://253da150e7c6.ngrok-free.app/api/v1/payment/verify', {
+						.post('https://moviego-6jj2.onrender.com/api/v1/payment/verify', {
 							reference: response.reference,
 							bookingId: bookingId,
 						})

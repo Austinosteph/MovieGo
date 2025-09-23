@@ -37,11 +37,14 @@ const Tickets = () => {
 	const { data: bookings = [] } = useQuery<Ticket[]>({
 		queryKey: ['bookings'],
 		queryFn: async () => {
-			const res = await axios.get('http://localhost:3000/api/v1/booking', {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('token')}`,
-				},
-			});
+			const res = await axios.get(
+				'https://moviego-6jj2.onrender.com/api/v1/booking',
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem('token')}`,
+					},
+				}
+			);
 			return res.data.bookings ?? [];
 		},
 	});

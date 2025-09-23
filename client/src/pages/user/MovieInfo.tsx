@@ -43,7 +43,7 @@ const MovieInfo = () => {
 			if (!token) throw new Error('No token found');
 
 			const res = await axios.get(
-				`http://localhost:3000/api/v1/movie/${movieinfoID}`,
+				`https://moviego-6jj2.onrender.com/api/v1/movie/${movieinfoID}`,
 				{
 					headers: { Authorization: `Bearer ${token}` },
 				}
@@ -146,7 +146,7 @@ const MovieInfo = () => {
 					{/* Movie details */}
 					<div className="mt-10 lg:mt-0 w-full lg:w-[250px] space-y-5 text-white flex-shrink-0">
 						<img
-							src={`http://localhost:3000${movie?.image}`}
+							src={`https://moviego-6jj2.onrender.com${movie?.image}`}
 							className="w-full sm:w-64 h-full sm:h-96 object-cover rounded-2xl mx-auto"
 						/>
 						<div className="space-y-2 text-center lg:text-left">

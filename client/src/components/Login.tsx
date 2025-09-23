@@ -26,7 +26,7 @@ const Login = () => {
 	// API call
 	const loginUser = async (userData: LoginData) => {
 		const res = await axios.post(
-			'http://localhost:3000/api/v1/auth/login',
+			'https://moviego-6jj2.onrender.com/api/v1/auth/login',
 			userData
 		);
 		return res.data;

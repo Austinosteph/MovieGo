@@ -24,11 +24,14 @@ const UserDashboard = () => {
 	const { data } = useQuery<Movie[]>({
 		queryKey: ['movies'],
 		queryFn: async () => {
-			const res = await axios.get('http://localhost:3000/api/v1/movie', {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('token')}`,
-				},
-			});
+			const res = await axios.get(
+				'https://moviego-6jj2.onrender.com/api/v1/movie',
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem('token')}`,
+					},
+				}
+			);
 			return res.data.movies;
 		},
 	});
@@ -76,7 +79,7 @@ const UserDashboard = () => {
 						<Link to={`/user/${movie._id}`} key={movie._id}>
 							<div className="border border-black rounded-xl p-4	 shadow flex flex-col justify-center items-center">
 								<img
-									src={`http://localhost:3000${movie.image}`}
+									src={`https://moviego-6jj2.onrender.com${movie.image}`}
 									alt={movie.title}
 									className="rounded-xl w-60 h-96 object-cover mb-2"
 								/>
