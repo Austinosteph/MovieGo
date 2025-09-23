@@ -52,7 +52,10 @@ const UserDashboard = () => {
 					<img src="/logo.png" className="w-32 h-12" />
 				</div>
 				<div className="flex space-x-4 items-center ">
-					<Link to="/tickets" className="font-semibold text-white">
+					<Link
+						to="/tickets"
+						className="font-semibold text-white hover:border-b-2 hover:border-green-800"
+					>
 						My Ticket
 					</Link>
 

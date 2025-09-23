@@ -32,9 +32,8 @@ const createBooking = async (req, res) => {
 	});
 };
 
-// Get all bookings for logged-in user
 const getUserBookings = async (req, res) => {
-	const bookings = await Booking.find({ user: req.user._id });
+	const bookings = await Booking.find({ user: req.user.userId });
 	res.status(StatusCodes.OK).json({ success: true, bookings });
 };
 
