@@ -3,6 +3,10 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useReducer } from 'react';
+import { useEffect } from 'react';
+import { isAuthenticated, getUserRole } from '../../lib/auth';
+import { logout } from '../../lib/auth';
+import { Link } from 'react-router-dom';
 
 interface Ticket {
 	_id: string;
@@ -54,8 +58,42 @@ const Tickets = () => {
 			? bookings.filter((b) => b.status === 'confirmed')
 			: bookings.filter((b) => b.status !== 'confirmed');
 
+	useEffect(() => {
+		if (!isAuthenticated() || getUserRole() !== 'user') {
+			logout();
+			navigate('/signin');
+		}
+	}, [navigate]);
+
+	const handleLogout = () => {
+		logout();
+		navigate('/signin');
+	};
+	const handlemovie = () => {
+		navigate('/user');
+	};
+
 	return (
 		<div className="bg-black-green min-h-screen w-full overflow-auto">
+			<nav className="p-4 px-6 flex justify-between">
+				<div>
+					<img src="/logo.png" className="w-32 h-12" />
+				</div>
+				<div className="flex space-x-2 items-center ">
+					<Button
+						className="bg-green-800 border border-black hover:bg-green-900"
+						onClick={handlemovie}
+					>
+						Movies
+					</Button>
+					<Button
+						className="bg-red-600 border border-black hover:bg-red-800"
+						onClick={handleLogout}
+					>
+						Logout
+					</Button>
+				</div>
+			</nav>
 			<div className="flex flex-col space-y-10 justify-center items-center pt-20">
 				{/* Buttons */}
 				<div className="flex flex-row space-x-4">

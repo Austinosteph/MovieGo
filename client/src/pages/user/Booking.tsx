@@ -46,7 +46,7 @@ const Booking = () => {
 					</Button>
 
 					<Button
-						className="bg-green-700 border border-green-950 px-6 py-3 hover:bg-green-800 text-base disabled:opacity-50"
+						className="bg-green-600 border border-green-950 px-6 py-3 hover:bg-green-800 text-base disabled:opacity-50"
 						disabled={seats.length === 0}
 						onClick={handleProceed}
 					>

@@ -178,7 +178,7 @@ const MovieInfo = () => {
 							*Seat selection can be done after this
 						</p>
 						<Button
-							className="bg-green-700 border border-green-950 mt-2 hover:bg-green-800 text-sm sm:text-base disabled:opacity-50"
+							className="bg-green-600 border border-green-950 mt-2 hover:bg-green-800 text-sm sm:text-base disabled:opacity-50"
 							disabled={!theater || !date || !time}
 							onClick={handleProceed}
 						>
