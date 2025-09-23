@@ -12,7 +12,7 @@ const Successful = () => {
 		<div className="bg-black-green min-h-screen w-full overflow-auto">
 			<main className="text-white flex flex-col items-center justify-center min-h-screen space-y-10">
 				<h1 className="font-semibold text-4xl">Payment Success</h1>
-				<img src="/public/🦆 icon _check circle_.png" className="w-40 h-40" />
+				<img src="/circle.png" className="w-40 h-40" />
 
 				<div className="flex flex-col  space-y-4 ">
 					<Button
