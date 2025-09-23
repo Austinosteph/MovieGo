@@ -1,5 +1,5 @@
 const axios = require('axios');
-const Payment = require('../models/payment');
+const Payment = require('../models/Payment');
 const Booking = require('../models/Booking');
 
 exports.initializePayment = async (req, res) => {
