@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 
 // routes
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/movie', authenticateUser, movieRouter);
+app.use('/api/v1/movie', movieRouter);
 app.use('/api/v1/booking', authenticateUser, bookingRouter);
 app.use('/api/v1/payment', paymentRouter);
 
